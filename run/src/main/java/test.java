@@ -10,10 +10,7 @@ public class test {
         Writerr writerr3 = new Writerr(library, "writer 3");
         Writerr writerr4 = new Writerr(library, "writer 4");
         Writerr writerr5 = new Writerr(library, "writer 5");
-        Writerr writerr6 = new Writerr(library, "writer 6 ");
-        Writerr writerr7 = new Writerr(library, "writer 7");
-        Writerr writerr8 = new Writerr(library, "writer 8");
-        Writerr writerr9 = new Writerr(library, "writer 9");
+        Writerr writerr6 = new Writerr(library, "writer 6");
 
         Readerr reader1 = new Readerr(library, "reader 1");
         Readerr reader2 = new Readerr(library, "reader 2");
@@ -35,9 +32,6 @@ public class test {
         library.execute(writerr4);
         library.execute(writerr5);
         library.execute(writerr6);
-        library.execute(writerr7);
-        library.execute(writerr8);
-        library.execute(writerr9);
         library.closeLibrary();
     }
 }

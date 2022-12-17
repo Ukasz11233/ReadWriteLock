@@ -1,6 +1,14 @@
 package library;
 
+
+import java.util.ArrayDeque;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+
 public class MySemaphore {
+
+        Queue<Thread> queue = new ArrayDeque<>();
         private int initialValue = 0;
         private int bound = 0;
 
@@ -10,19 +18,19 @@ public class MySemaphore {
         }
 
 
-        public synchronized void release(boolean isReader) throws InterruptedException{
-            while(this.initialValue == bound){
-                wait();
+        public void release() throws InterruptedException{
+            initialValue++;
+            if(initialValue <= 0) {
+                Thread tmp = queue.remove();
+                tmp.run();
             }
-            this.initialValue = isReader ? initialValue+5 : initialValue+1;
-            this.notify();
         }
 
-        public synchronized void acquire(boolean isReader) throws InterruptedException{
-            while(this.initialValue == 0){
-                wait();
+        public synchronized void acquire(Thread thread) throws InterruptedException{
+            this.initialValue--;
+            if (initialValue < 0) {
+                queue.add(thread);
+                thread.wait();
             }
-            this.initialValue = isReader ? initialValue-5 : initialValue-1;
-            this.notify();
         }
 }
