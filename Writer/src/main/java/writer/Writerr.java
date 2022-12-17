@@ -21,16 +21,16 @@ public class Writerr extends Thread
     public void run() {
         while (true) {
             try {
-                library.enterQueue();
                 Logs.info(name + " wants to enter the library.");
+                library.enterQueue();
                 library.requestWrite();
                 Logs.info(name + " is WRITING.");
                 Thread.sleep(2500);
                 Logs.info(name + " has finished WRITING.");
                 library.finishWrite();
-                Thread.sleep(Random.getRandomInt(1000, 1500));
-                Logs.info(name + " is leaving the library.");
                 library.leaveQueue();
+                Thread.sleep(Random.getRandomInt(100, 150));
+                Logs.info(name + " is leaving the library.");
             } catch (InterruptedException e) {
                 logger.log(Level.OFF, "catch runServer", e);
                 Thread.currentThread().interrupt();

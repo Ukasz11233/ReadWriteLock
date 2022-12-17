@@ -16,15 +16,14 @@ public class Readerr extends Thread {
     public void run() {
         while (true) {
             try {
-                library.enterQueue();
                 Logs.info(name +" is WAITING");
+                library.enterQueue();
                 library.requestRead();
                 library.addReader();
                 if (library.getNumOfReaders() == 1) {
                     library.requestWrite();
                 }
                 library.finishRead();
-                library.leaveQueue();
 
                 Logs.info(name + " is READING");
                 Thread.sleep(1500);
@@ -36,8 +35,9 @@ public class Readerr extends Thread {
                     library.finishWrite();
                 }
                 library.finishRead();
+                library.leaveQueue();
                 Logs.info(name + " is LEAVING");
-                Thread.sleep(Random.getRandomInt(200, 500));
+                Thread.sleep(Random.getRandomInt(20, 50));
             } catch (InterruptedException e) {
                 Logs.info(e.getMessage());
                 Thread.currentThread().interrupt();

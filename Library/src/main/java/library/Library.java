@@ -6,16 +6,14 @@ import java.util.concurrent.Semaphore;
 
 public class Library {
     private final ExecutorService service;
-    private final Semaphore queueLock;
-    private final Semaphore readLock;
-    private final Semaphore writeLock;
+    private final MySemaphore readWriteLock;
+    private final MySemaphore queueLock;
     private int numOfReaders;
 
 
     public Library() {
-        queueLock = new Semaphore(1);
-        readLock = new Semaphore(1);
-        writeLock = new Semaphore(1);
+        readWriteLock = new MySemaphore(1, 1);
+        queueLock = new MySemaphore(1, 1);
         service = Executors.newFixedThreadPool(5);
         numOfReaders = 0;
     }
@@ -23,27 +21,30 @@ public class Library {
     public void execute(Thread thread) {
         service.execute(thread);
     }
-    public void requestRead() throws InterruptedException {
-        readLock.acquire();
-    }
 
-    public void enterQueue() throws InterruptedException{
+    public void enterQueue() throws InterruptedException
+    {
         queueLock.acquire();
     }
 
-    public void leaveQueue(){
+    public void leaveQueue() throws InterruptedException
+    {
         queueLock.release();
     }
-    public void finishRead(){
-        readLock.release();
+    public void requestRead() throws InterruptedException {
+        readWriteLock.acquire(true);
+    }
+
+    public void finishRead() throws InterruptedException {
+        readWriteLock.release(true);
     }
 
     public void requestWrite() throws InterruptedException {
-        writeLock.acquire();
+        readWriteLock.acquire(false);
     }
 
-    public void finishWrite(){
-        writeLock.release();
+    public void finishWrite() throws InterruptedException {
+        readWriteLock.release(false);
     }
 
     public void closeLibrary() {
