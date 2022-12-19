@@ -1,36 +1,55 @@
 package library;
-
-
-import java.util.ArrayDeque;
-import java.util.PriorityQueue;
+import logs.*;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class MySemaphore {
-
-        Queue<Thread> queue = new ArrayDeque<>();
-        private int initialValue = 0;
-        private int bound = 0;
-
-        public MySemaphore(int initialValue,int upperBound){
-            this.bound = upperBound;
-            this.initialValue = initialValue;
+        private int semaphore;
+        private int numberOfReaders;
+        private int numberOfWriters;
+        Queue<Thread> queue = new LinkedList<>();
+        public MySemaphore(int initialValue){
+            this.semaphore = initialValue;
+            numberOfWriters = 0;
+            numberOfReaders = 0;
         }
 
 
-        public void release() throws InterruptedException{
-            initialValue++;
-            if(initialValue <= 0) {
-                Thread tmp = queue.remove();
-                tmp.run();
-            }
-        }
-
-        public synchronized void acquire(Thread thread) throws InterruptedException{
-            this.initialValue--;
-            if (initialValue < 0) {
+        public synchronized void release(Thread thread, boolean isWriter){
+            addToQueue(isWriter, true);
+            Logs.debug(status());
+            semaphore--;
+            if(semaphore < 0)
+            {
                 queue.add(thread);
-                thread.wait();
+                thread.start();
             }
         }
+
+        public synchronized void acquire(boolean isWriter) {
+            addToQueue(isWriter, false);
+            Logs.debug(status());
+            semaphore++;
+            if(semaphore <= 0)
+            {
+                queue.poll();
+                while(semaphore <= 0);
+            }
+        }
+
+        private void addToQueue(boolean isWriter, boolean isLeaving)
+        {
+            if(isWriter)
+            {
+                numberOfWriters += isLeaving ? -1 : 1;
+            }
+            else {
+                numberOfReaders += isLeaving ? -1 : 1;
+            }
+
+        }
+
+    private String status() {
+            return "Number of readers/writers in queue: " + numberOfReaders + " / " + numberOfWriters;
+    }
 }
