@@ -61,6 +61,6 @@ public class Library {
 
     public String toString()
     {
-        return "Number of readers/writers: " + numOfReaders + " / " + numOfWriters;
+        return "Number of readers/writers in library: " + (numOfWriters > 0 ? 0 : numOfReaders) + " / " + numOfWriters;
     }
 }

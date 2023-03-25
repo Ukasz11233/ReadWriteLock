@@ -22,12 +22,14 @@ public class Writerr extends Thread
         while (true) {
             try {
                 library.enterQueue( true);
+                Logs.info(name + " wants to enter");
                 library.requestWrite();
                 library.leaveQueue(this, true);
                 library.addWriter();
-
+                Logs.debug(library.toString());
                 Logs.info(name + " is writing.");
                 Thread.sleep(2500);
+                Logs.info(name + " is leaving");
                 library.finishWrite();
                 library.removeWriter();
 

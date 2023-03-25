@@ -1,45 +1,41 @@
 package run;
 
 import library.Library;
+import logs.Logs;
 import reader.Readerr;
 import writer.Writerr;
 
+import java.util.ArrayList;
+
 public class Run {
-    public static void main(String[] args) {
-        Library library = new Library();
-        Writerr writer = new Writerr(library, "writer 1");
-        Writerr writer2 = new Writerr(library, "writer 2");
-        Writerr writerr3 = new Writerr(library, "writer 3");
-        Writerr writerr4 = new Writerr(library, "writer 4");
-        Writerr writerr5 = new Writerr(library, "writer 5");
-        Writerr writerr6 = new Writerr(library, "writer 6");
-        Writerr writerr7 = new Writerr(library, "writer 7");
-        Writerr writerr8 = new Writerr(library, "writer 8");
-        Writerr writerr9 = new Writerr(library, "writer 9");
 
-        Readerr reader1 = new Readerr(library, "reader 1");
-        Readerr reader2 = new Readerr(library, "reader 2");
-        Readerr reader3 = new Readerr(library, "reader 3");
-        Readerr reader4 = new Readerr(library, "reader 4");
-        Readerr reader5 = new Readerr(library, "reader 5");
-        Readerr reader6 = new Readerr(library, "reader 6");
+    private static Library library = new Library();
+    private static int writerIdx = 0;
+    private static int readerIdx = 0;
 
+    private static ArrayList<Writerr> writers = new ArrayList<>();
+    private static ArrayList<Readerr> readers = new ArrayList<>();
 
-        writer.start();
-        writer2.start();
-        reader1.start();
-        reader3.start();
-        reader4.start();
-        reader6.start();
-        writerr3.start();
-        writerr4.start();
-        writerr5.start();
-        writerr6.start();
-        reader5.start();
-        reader2.start();
-        writerr7.start();
-        writerr8.start();
-        writerr9.start();
-
+    private static void InitializeReadersAndWriters(){
+        for(int i = 0 ; i < 20; ++i) {
+            writers.add(new Writerr(library, "writer " + writerIdx++));
+            readers.add(new Readerr(library, "reader " + readerIdx++));
+        }
     }
+    public static void main(String[] args) {
+        InitializeReadersAndWriters();
+        if (args.length < 2) {
+            Logs.info("Please enter number of readers and writers");
+        } else if (args.length == 2) {
+
+            for(int i = 0 ; i< Integer.parseInt(args[1]); ++i) {
+                writers.get(i).start();
+            }
+
+            for(int i = 0; i < Integer.parseInt(args[0]); ++i) {
+                readers.get(i).start();
+            }
+        }
+    }
+
 }

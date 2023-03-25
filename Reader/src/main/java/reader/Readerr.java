@@ -18,6 +18,7 @@ public class Readerr extends Thread {
         while (true) {
             try {
                 library.enterQueue( false);
+                Logs.info(name + " wants to enter");
                 library.requestRead();
                 library.addReader();
                 if (library.getNumOfReaders() == 1) {
@@ -25,7 +26,7 @@ public class Readerr extends Thread {
                 }
                 library.finishRead();
                 library.leaveQueue(this, false);
-
+                Logs.debug(library.toString());
                 Logs.info(name + " is READING");
                 Thread.sleep(1500);
 
@@ -35,6 +36,7 @@ public class Readerr extends Thread {
                 if (library.getNumOfReaders() == 0) {
                     library.finishWrite();
                 }
+                Logs.info(name + " is leaving");
                 library.finishRead();
                 Thread.sleep(Random.getRandomInt(200, 500));
             } catch (InterruptedException e) {
